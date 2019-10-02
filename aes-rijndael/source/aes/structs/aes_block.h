@@ -8,26 +8,7 @@
 using namespace fundamental_structs;
 
 template <size_t Height, size_t Width>
-class aes_block
-{
-public:
-	[[nodiscard]] uint8_t& at(size_t row, size_t column)
-	{
-		return this->matrix.at(row, column);
-	}
-
-	[[nodiscard]] size_t get_rows_count() const
-	{
-		return Height;
-	}
-
-	[[nodiscard]] size_t get_columns_count() const
-	{
-		return Width;
-	}
-
-	matrix<uint8_t, Height, Width> matrix;
-};
+using aes_block = matrix<uint8_t, Height, Width>;
 
 struct aes_block_util
 {
@@ -102,7 +83,7 @@ struct aes_block_util
 		{
 			span<uint8_t> row
 			(
-				new_block.matrix.data_array.data() + row_i * Width,
+				new_block.data_array.data() + row_i * Width,
 				Width
 			); // get row as span
 
@@ -132,7 +113,7 @@ struct aes_block_util
 		{
 			span<uint8_t> row
 			(
-				new_block.matrix.data_array.data() + row_i * Width,
+				new_block.data_array.data() + row_i * Width,
 				Width
 			); // get row as span
 
@@ -232,7 +213,7 @@ struct aes_block_util
 				uint8_t temp_column[4];
 
 				for (size_t i = 0; i < 4; i++)
-					temp_column[i] = new_block.matrix.value_at(i, j);
+					temp_column[i] = new_block.value_at(i, j);
 
 				new_block.at(0, j) =
 					gf28::multiply(0x02, temp_column[0]) ^
@@ -307,7 +288,7 @@ struct aes_block_util
 				uint8_t temp_column[4];
 
 				for (size_t i = 0; i < 4; i++)
-					temp_column[i] = new_block.matrix.value_at(i, j);
+					temp_column[i] = new_block.value_at(i, j);
 
 				new_block.at(0, j) =
 					gf28::multiply(0x0E, temp_column[0]) ^
@@ -347,7 +328,7 @@ struct aes_block_util
 			aes_block<Height, Width> new_block;
 
 			for (size_t i = 0; i < Height * Width; i++)
-				new_block.matrix.data_array.at(i) = state.matrix.data_array.at(i) ^ key.matrix.data_array.at(i);
+				new_block.data_array.at(i) = state.data_array.at(i) ^ key.data_array.at(i);
 
 			return new_block;
 		}
@@ -403,10 +384,10 @@ struct aes_block_util
 				for (size_t i = 1; i < 11; i++)
 				{
 					// get first column of previous round key
-					const std::array<uint8_t, 4> first_column_preview = keys[i - 1].matrix.get_column(0);
+					const std::array<uint8_t, 4> first_column_preview = keys[i - 1].get_column(0);
 
 					// get third column of previous round key
-					const std::array<uint8_t, 4> fourth_column_preview = keys[i - 1].matrix.get_column(3);
+					const std::array<uint8_t, 4> fourth_column_preview = keys[i - 1].get_column(3);
 
 					// get first column of new round key
 					const std::array<uint8_t, 4> first_new_column =
@@ -423,13 +404,13 @@ struct aes_block_util
 
 					const std::array<uint8_t, 4> second_new_column =
 						key_schedule_128:: xor (
-							keys[i - 1].matrix.get_column(1),
+							keys[i - 1].get_column(1),
 							first_new_column
 							);
 
 					const std::array<uint8_t, 4> third_new_column =
 						key_schedule_128:: xor (
-							keys[i - 1].matrix.get_column(2),
+							keys[i - 1].get_column(2),
 							second_new_column
 							);
 
@@ -443,10 +424,10 @@ struct aes_block_util
 					aes_block<4, 4> round_key;
 
 					// set columns
-					round_key.matrix.set_column(first_new_column, 0);
-					round_key.matrix.set_column(second_new_column, 1);
-					round_key.matrix.set_column(third_new_column, 2);
-					round_key.matrix.set_column(fourth_new_column, 3);
+					round_key.set_column(first_new_column, 0);
+					round_key.set_column(second_new_column, 1);
+					round_key.set_column(third_new_column, 2);
+					round_key.set_column(fourth_new_column, 3);
 
 					// set round key
 					keys[i] = round_key;

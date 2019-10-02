@@ -23,7 +23,7 @@ public:
 			{
 				aes_block<4, 4> state;
 
-				std::copy(hash.begin(), hash.end(), state.matrix.data_array.begin());
+				std::copy(hash.begin(), hash.end(), state.data_array.begin());
 
 				return state;
 			}
@@ -40,7 +40,7 @@ public:
 				for (size_t block_i = 0; block_i < blocks.size(); block_i++)
 				{
 					std::copy(message.data() + block_i * 16, message.data() + block_i * 16 + 16,
-						blocks[block_i].matrix.data_array.begin()
+						blocks[block_i].data_array.begin()
 					);
 				}
 
@@ -53,7 +53,7 @@ public:
 
 				for (aes_block<4, 4> & state : states)
 					for (size_t j = 0; j < 16; j++)
-						message += state.matrix.data_array[j];
+						message += state.data_array[j];
 
 				return message;
 			}
@@ -104,7 +104,7 @@ public:
 			{
 				aes_block<4, 4> state;
 
-				std::copy(hash.begin(), hash.end(), state.matrix.data_array.begin());
+				std::copy(hash.begin(), hash.end(), state.data_array.begin());
 
 				return state;
 			}
@@ -121,7 +121,7 @@ public:
 				for (size_t block_i = 0; block_i < blocks.size(); block_i++)
 				{
 					std::copy(message.data() + block_i * 16, message.data() + block_i * 16 + 16,
-						blocks[block_i].matrix.data_array.begin()
+						blocks[block_i].data_array.begin()
 					);
 				}
 
@@ -134,7 +134,7 @@ public:
 
 				for (aes_block<4, 4> & state : states)
 					for (size_t j = 0; j < 16; j++)
-						message += state.matrix.data_array[j];
+						message += state.data_array[j];
 
 				return message;
 			}
