@@ -2,11 +2,10 @@
 
 #include <string>
 
-class aes  // NOLINT
+class aes_traits
 {
 public:
-
-	virtual ~aes() = default;
+	virtual ~aes_traits() = default;
 
 	/**
 	 * \param message message to encryption
